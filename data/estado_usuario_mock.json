@@ -1,0 +1,21 @@
+{
+  "sessao_ativa": {
+    "sessao_id": "usr_anon_9x8f2a",
+    "timestamp_inicio": "2023-11-05T14:30:00Z",
+    "dados_financeiros_informados": {
+      "renda_liquida_mensal": 4500.00,
+      "status_divida_ativa": true,
+      "reserva_emergencia_concluida": false
+    },
+    "perfil_comportamental": {
+      "nivel_conhecimento": "iniciante",
+      "objetivo_principal": "Sair das dívidas e começar a guardar dinheiro"
+    },
+    "historico_contexto": [
+      {
+        "role": "user",
+        "content": "Oi Moni, eu ganho 4500 reais líquidos, mas acabei me enrolando no cartão de crédito esses meses. Não sei como arrumar isso."
+      }
+    ]
+  }
+}
