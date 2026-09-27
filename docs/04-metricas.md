@@ -1,71 +1,61 @@
 # Avaliação e Métricas
 
 ## Como Avaliar seu Agente
+A avaliação da Moni pode ser feita de duas formas complementares:
 
-A avaliação pode ser feita de duas formas complementares:
-
-1. **Testes estruturados:** Você define perguntas e respostas esperadas;
-2. **Feedback real:** Pessoas testam o agente e dão notas.
-
+1. **Testes estruturados:** Você define perguntas, simula contextos na barra lateral (renda e status de dívida) e valida se as respostas esperadas são geradas.
+2. **Feedback real:** Pessoas testam o agente, interagem naturalmente sobre suas finanças e avaliam a empatia e clareza da IA.
 ---
 
 ## Métricas de Qualidade
 
 | Métrica | O que avalia | Exemplo de teste |
 |---------|--------------|------------------|
-| **Assertividade** | O agente respondeu o que foi perguntado? | Perguntar o saldo e receber o valor correto |
-| **Segurança** | O agente evitou inventar informações? | Perguntar algo fora do contexto e ele admitir que não sabe |
-| **Coerência** | A resposta faz sentido para o perfil do cliente? | Sugerir investimento conservador para cliente conservador |
-
-> [!TIP]
-> Peça para 3-5 pessoas (amigos, família, colegas) testarem seu agente e avaliarem cada métrica com notas de 1 a 5. Isso torna suas métricas mais confiáveis! Caso use os arquivos da pasta `data`, lembre-se de contextualizar os participantes sobre o **cliente fictício** representado nesses dados.
+| **Assertividade** | O agente respeitou as regras matemáticas e o contexto do usuário? | Informar renda de R$ 1.500 com dívida e verificar se a IA zera os investimentos e calcula 30% para quitação. |
+| **Segurança** | O agente evitou inventar informações e se manteve no escopo? | Perguntar sobre futebol ou clima e a IA admitir que não sabe, redirecionando para finanças. |
+| **Coerência** | A resposta faz sentido para o perfil e estado emocional do cliente? | Manter um tom empático e sem julgamentos quando o usuário declarar estar endividado. |
 
 ---
 
 ## Exemplos de Cenários de Teste
+Baseado na execução real da aplicação, criamos testes para validar as travas de segurança e as regras de negócio da Moni.
 
-Crie testes simples para validar seu agente:
+### Teste 1: Regra de Negócio Adaptada (Cenário Endividado)
+- **Contexto:** Renda definida para R$ 1500,00 e checkbox de dívidas ativas marcado.
+- **Pergunta:** "Crie um plano de investimentos com eu salario atual"
+- **Resposta esperada:** A Moni deve apresentar os cálculos prontos (R$ 750,00 para despesas, R$ 300,00 livres, R$ 450,00 para quitação) e zerar a categoria de longo prazo (R$ 0,00), explicando que o foco atual deve ser usar os R$ 450,00 para quitar as dívidas.
+- **Resultado:** [X] Correto  [ ] Incorreto
 
-### Teste 1: Consulta de gastos
-- **Pergunta:** "Quanto gastei com alimentação?"
-- **Resposta esperada:** Valor baseado no `transacoes.csv`
-- **Resultado:** [ ] Correto  [ ] Incorreto
+### Teste 2: Segurança Anti-Alucinação (Fora de Escopo)
+- **Contexto:** Testar a barreira de conhecimento delimitado.
+- **Pergunta:** "qual o resultado do ultimo jogo do brasil na copa?" e "qual a temperatura em sao jose dos campos?"
+- **Resposta esperada:** O agente deve pedir desculpas, informar que não tem acesso a informações sobre jogos esportivos ou condições climáticas, e oferecer ajuda com questões financeiras e de orçamento.
+- **Resultado:** [X] Correto  [ ] Incorreto
 
-### Teste 2: Recomendação de produto
-- **Pergunta:** "Qual investimento você recomenda para mim?"
-- **Resposta esperada:** Produto compatível com o perfil do cliente
-- **Resultado:** [ ] Correto  [ ] Incorreto
-
-### Teste 3: Pergunta fora do escopo
-- **Pergunta:** "Qual a previsão do tempo?"
-- **Resposta esperada:** Agente informa que só trata de finanças
-- **Resultado:** [ ] Correto  [ ] Incorreto
-
-### Teste 4: Informação inexistente
-- **Pergunta:** "Quanto rende o produto XYZ?"
-- **Resposta esperada:** Agente admite não ter essa informação
-- **Resultado:** [ ] Correto  [ ] Incorreto
+### Teste 3: Interface e Saudação Inicial
+- **Contexto:** Carregamento inicial do aplicativo no navegador local (localhost).
+- **Ação:** Abrir o Streamlit.
+- **Resposta esperada:* A barra lateral de variáveis (renda padrão em 4500,00 e dívida ativada) deve aparecer, juntamente com a mensagem automática: "Olá! Eu sou a Moni, sua planejadora de bolso. Vi que sua renda já está configurada..." [cite: 1].
+- **Resultado:** [X] Correto  [ ] Incorreto
 
 ---
 
 ## Resultados
-
-Após os testes, registre suas conclusões:
+Com base nos registros das imagens de execução da aplicação, temos as seguintes conclusões parciais:
 
 **O que funcionou bem:**
-- [Liste aqui]
+- A delegação dos cálculos matemáticos para o código em Python funcionou perfeitamente. A IA formatou o texto com precisão e repassou os exatos R$ 450,00 (30% de 1500) para quitação de dívidas quando o perfil exigia.
+- O prompt de restrição (system prompt) limitou perfeitamente o domínio de conhecimento. A Moni não alucinou sobre futebol ou clima.
+- A interface web em Streamlit rodou de forma limpa, carregando a sidebar de contexto (mock) e o chat com sucesso
 
 **O que pode melhorar:**
-- [Liste aqui]
+- A aplicação local via Ollama está sujeita a limitações de hardware (erros de buffer de GPU/CUDA) caso a máquina fique sem memória durante respostas mais longas, exigindo eventual fallback para CPU ou para modelos mais leves, como o Phi-3.
+- Podemos adicionar no futuro um botão de "Limpar Chat" na interface, visto que o histórico em Streamlit mantém todo o contexto anterior, o que pode aumentar gradativamente o consumo de contexto (tokens) do LLM.
 
 ---
 
 ## Métricas Avançadas (Opcional)
-
-Para quem quer explorar mais, algumas métricas técnicas de observabilidade também podem fazer parte da sua solução, como:
-
-- Latência e tempo de resposta;
-- Consumo de tokens e custos;
-- Logs e taxa de erros.
-
-Ferramentas especializadas em LLMs, como [LangWatch](https://langwatch.ai/) e [LangFuse](https://langfuse.com/), são exemplos que podem ajudar nesse monitoramento. Entretanto, fique à vontade para usar qualquer outra que você já conheça!
+Para evoluir a Moni no futuro para um ambiente de nuvem, algumas métricas técnicas de observabilidade devem fazer parte da solução:
+- Latência e Tempo de Resposta: Essencial, especialmente se o modelo rodar localmente na máquina do usuário.
+- Consumo de Tokens: Se substituirmos o Ollama (gratuito local) por uma API paga no futuro (como OpenAI ou Google Gemini), controlar os tokens de entrada e saída será vital para prever os custos.
+- Logs e Taxa de Erros: Ferramentas especializadas em LLMs, como LangWatch e LangFuse, podem ajudar nesse monitoramento de forma contínua, permitindo ler exatamente o que os usuários estão conversando com a Moni.
