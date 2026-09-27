@@ -1,0 +1,25 @@
+{
+  "termos_educacionais": [
+    {
+      "termo": "Reserva de Emergência",
+      "definicao_simples": "É o seu 'colchão de segurança'. Um dinheiro guardado apenas para imprevistos, como consertar o carro ou caso perca o emprego. O ideal é ter o valor de 3 a 6 meses do seu custo de vida guardado nela.",
+      "exemplo_pratico": "Se suas despesas fixas são de R$ 2.000, sua reserva ideal é de pelo menos R$ 6.000."
+    },
+    {
+      "termo": "Liquidez Diária",
+      "definicao_simples": "Significa a facilidade de resgatar o seu dinheiro. Um investimento com 'liquidez diária' permite que você tire o dinheiro no mesmo dia sem perder os rendimentos. É o único lugar onde sua reserva de emergência deve ficar."
+    },
+    {
+      "termo": "CDI",
+      "definicao_simples": "É uma taxa que serve como 'nota de corte' para seus investimentos em Renda Fixa. Um bom investimento de baixo risco, como o lugar para guardar sua reserva, deve render pelo menos 100% do CDI."
+    },
+    {
+      "termo": "Renda Fixa",
+      "definicao_simples": "São investimentos onde você 'empresta' dinheiro para um banco ou para o governo. Em troca, eles te devolvem o valor com juros previsíveis."
+    },
+    {
+      "termo": "Tesouro Selic",
+      "definicao_simples": "É um título de Renda Fixa onde você empresta dinheiro para o governo brasileiro. É considerado o investimento mais seguro do país e é uma ótima opção para guardar a reserva de emergência."
+    }
+  ]
+}
