@@ -1,149 +1,105 @@
 # 🤖 Agente Financeiro Inteligente com IA Generativa
 
 ## Contexto
-
-Os assistentes virtuais no setor financeiro estão evoluindo de simples chatbots reativos para **agentes inteligentes e proativos**. Neste desafio, você vai idealizar e prototipar um agente financeiro que utiliza IA Generativa para:
-
-- **Antecipar necessidades** ao invés de apenas responder perguntas
-- **Personalizar** sugestões com base no contexto de cada cliente
-- **Cocriar soluções** financeiras de forma consultiva
-- **Garantir segurança** e confiabilidade nas respostas (anti-alucinação)
-
-> [!TIP]
-> Na pasta [`examples/`](./examples/) você encontra referências de implementação para cada etapa deste desafio.
-
----
-
-## O Que Você Deve Entregar
+- Os assistentes virtuais no setor financeiro estão evoluindo de simples chatbots reativos para agentes inteligentes e proativos. Neste projeto, idealizamos e prototipamos a Moni, uma agente financeira que utiliza IA Generativa rodando de forma 100% local (privada) para:
+- Antecipar necessidades calculando e propondo orçamentos proativamente com base na renda informada.
+- Personalizar sugestões adaptando a regra de alocação de capital (ex: pausando investimentos caso o usuário relate ter dívidas).
+- Cocriar soluções financeiras de forma consultiva e empática, focando em "pequenas vitórias".
+- Garantir segurança delegando os cálculos matemáticos para o código fonte (Python) em vez da LLM e implementando "guardrails" contra recomendações de ativos de risco.
 
 ### 1. Documentação do Agente
+Definição de o que o agente faz e como ele funciona:
+- **Caso de Uso:** Planejamento financeiro de bolso para jovens adultos, estruturando a divisão do salário e educando sobre conceitos básicos.
+- **Persona e Tom de Voz:** Moni é consultiva, empática, didática e livre de julgamentos. O tom é acessível e evita "economês" sem explicação.
+- **Arquitetura:** Interface em Streamlit, integração local com LangChain + Ollama, e cálculos lógicos isolados no back-end.
+- **Segurança:** A IA não possui acesso a contas bancárias, não calcula porcentagens "de cabeça" (evitando alucinação matemática) e bloqueia conversas fora do escopo financeiro.
 
-Defina **o que** seu agente faz e **como** ele funciona:
-
-- **Caso de Uso:** Qual problema financeiro ele resolve? (ex: consultoria de investimentos, planejamento de metas, alertas de gastos)
-- **Persona e Tom de Voz:** Como o agente se comporta e se comunica?
-- **Arquitetura:** Fluxo de dados e integração com a base de conhecimento
-- **Segurança:** Como evitar alucinações e garantir respostas confiáveis?
-
-📄 **Template:** [`docs/01-documentacao-agente.md`](./docs/01-documentacao-agente.md)
+📄 Documentação completa: docs/01-documentacao-agente.md
 
 ---
 
 ### 2. Base de Conhecimento
-
-Utilize os **dados mockados** disponíveis na pasta [`data/`](./data/) para alimentar seu agente:
+Utilizamos dados mockados armazenados na pasta data/ para alimentar o contexto e as regras do agente sem expor dados reais de clientes:
 
 | Arquivo | Formato | Descrição |
 |---------|---------|-----------|
-| `transacoes.csv` | CSV | Histórico de transações do cliente |
-| `historico_atendimento.csv` | CSV | Histórico de atendimentos anteriores |
-| `perfil_investidor.json` | JSON | Perfil e preferências do cliente |
-| `produtos_financeiros.json` | JSON | Produtos e serviços disponíveis |
+| `regras_orcamento.json` | JSON | Matriz de cálculo das regras de alocação (ex: Regra 50/20/20/10 e sua variação para endividados). |
+| `dicionario_financeiro.json` | JSON | Base de conhecimento educacional para explicar termos como CDI, Liquidez e Reserva de Emergência. |
+| `estado_usuario_mock.json` | JSON | Variáveis que simulam a sessão do cliente (renda líquida, status de dívidas). |
 
-Você pode adaptar ou expandir esses dados conforme seu caso de uso.
-
-📄 **Template:** [`docs/02-base-conhecimento.md`](./docs/02-base-conhecimento.md)
+📄 Documentação completa: docs/02-base-conhecimento.md
 
 ---
 
 ### 3. Prompts do Agente
+O "cérebro" comportamental da Moni é regido por um System Prompt robusto, focado em segurança financeira:
+- **System Prompt:** Define a persona, obriga o uso dos cálculos injetados pelo Python e proíbe previsões macroeconômicas.
+- **Exemplos de Interação:** Cenários padronizados para usuários com e sem dívidas.
+- **Tratamento de Edge Cases:** Como a Moni responde a tentativas de obter senhas, solicitações de dicas de ações específicas e perguntas fora de contexto (ex: futebol ou clima).
 
-Documente os prompts que definem o comportamento do seu agente:
-
-- **System Prompt:** Instruções gerais de comportamento e restrições
-- **Exemplos de Interação:** Cenários de uso com entrada e saída esperada
-- **Tratamento de Edge Cases:** Como o agente lida com situações limite
-
-📄 **Template:** [`docs/03-prompts.md`](./docs/03-prompts.md)
+📄 Documentação completa: docs/03-prompts.md
 
 ---
 
 ### 4. Aplicação Funcional
+Desenvolvemos um protótipo funcional e seguro, projetado para rodar offline em seu próprio computador:
+- **Frontend:** Chatbot interativo web construído em Streamlit.
+- **LLM Local:** IA generativa provida pelo Ollama (modelo Llama 3), garantindo que dados de renda não vão para a nuvem.
+- **Orquestração:** LangChain estruturando o histórico de conversas e injetando o contexto dinâmico.
 
-Desenvolva um **protótipo funcional** do seu agente:
-
-- Chatbot interativo (sugestão: Streamlit, Gradio ou similar)
-- Integração com LLM (via API ou modelo local)
-- Conexão com a base de conhecimento
-
-📁 **Pasta:** [`src/`](./src/)
+📁 Código Fonte: src/
 
 ---
 
 ### 5. Avaliação e Métricas
+Estabelecemos métricas e testes estruturados para garantir a qualidade da resposta:
+- **Assertividade:** A precisão com que o agente respeita as regras matemáticas de orçamento (ex: cálculo exato de 30% da renda).
+- **Segurança:** O bloqueio efetivo de recomendações específicas e negação de respostas fora do escopo.
+- **Coerência:** A manutenção do tom empático diante do estado de endividamento do usuário.
 
-Descreva como você avalia a qualidade do seu agente:
-
-**Métricas Sugeridas:**
-- Precisão/assertividade das respostas
-- Taxa de respostas seguras (sem alucinações)
-- Coerência com o perfil do cliente
-
-📄 **Template:** [`docs/04-metricas.md`](./docs/04-metricas.md)
+📄 Documentação completa: docs/04-metricas.md
 
 ---
 
 ### 6. Pitch
+Apresentação comercial e estratégica da Moni:
+- **O Problema:** A falta de clareza e de um método acessível para organizar o salário e criar uma rede de segurança financeira.
+- **A Solução:** Um assistente instantâneo que, de posse apenas da renda mensal, formula um plano de ação imediato para dividir as finanças de forma saudável.
+- **A Inovação:** A união da empatia e fluidez de um LLM com cálculos determinísticos matemáticos fechados e totalmente locais.
 
-Grave um **pitch de 3 minutos** (estilo elevador) apresentando:
-
-- Qual problema seu agente resolve?
-- Como ele funciona na prática?
-- Por que essa solução é inovadora?
-
-📄 **Template:** [`docs/05-pitch.md`](./docs/05-pitch.md)
+📄 Documentação completa: docs/05-pitch.md
 
 ---
 
 ## Ferramentas Sugeridas
-
-Todas as ferramentas abaixo possuem versões gratuitas:
-
-| Categoria | Ferramentas |
-|-----------|-------------|
-| **LLMs** | [ChatGPT](https://chat.openai.com/), [Copilot](https://copilot.microsoft.com/), [Gemini](https://gemini.google.com/), [Claude](https://claude.ai/), [Ollama](https://ollama.ai/) |
-| **Desenvolvimento** | [Streamlit](https://streamlit.io/), [Gradio](https://www.gradio.app/), [Google Colab](https://colab.research.google.com/) |
-| **Orquestração** | [LangChain](https://www.langchain.com/), [LangFlow](https://www.langflow.org/), [CrewAI](https://www.crewai.com/) |
-| **Diagramas** | [Mermaid](https://mermaid.js.org/), [Draw.io](https://app.diagrams.net/), [Excalidraw](https://excalidraw.com/) |
+- Linguagem: Python 3
+- Interface Gráfica: Streamlit
+- Framework de IA: LangChain (langchain, langchain-community, langchain-ollama)
+- Provedor de LLM: Ollama (Rodando localmente para garantir a privacidade dos dados financeiros).
+- Modelo LLM sugerido: llama3.1 (ou phi3 para máquinas com restrição de memória).
 
 ---
 
 ## Estrutura do Repositório
 
 ```
-📁 lab-agente-financeiro/
-│
-├── 📄 README.md
-│
-├── 📁 data/                          # Dados mockados para o agente
-│   ├── historico_atendimento.csv     # Histórico de atendimentos (CSV)
-│   ├── perfil_investidor.json        # Perfil do cliente (JSON)
-│   ├── produtos_financeiros.json     # Produtos disponíveis (JSON)
-│   └── transacoes.csv                # Histórico de transações (CSV)
-│
-├── 📁 docs/                          # Documentação do projeto
-│   ├── 01-documentacao-agente.md     # Caso de uso e arquitetura
-│   ├── 02-base-conhecimento.md       # Estratégia de dados
-│   ├── 03-prompts.md                 # Engenharia de prompts
-│   ├── 04-metricas.md                # Avaliação e métricas
-│   └── 05-pitch.md                   # Roteiro do pitch
-│
-├── 📁 src/                           # Código da aplicação
-│   └── app.py                        # (exemplo de estrutura)
-│
-├── 📁 assets/                        # Imagens e diagramas
-│   └── ...
-│
-└── 📁 examples/                      # Referências e exemplos
-    └── README.md
+Moni/
+├── README.md                      # Você está aqui
+├── docs/                          # Documentação detalhada do projeto
+│   ├── 01-documentacao-agente.md
+│   ├── 02-base-conhecimento.md
+│   ├── 03-prompts.md
+│   ├── 04-metricas.md
+│   └── 05-pitch.md
+├── data/                          # Base de dados (Mocks e Contexto)
+│   ├── regras_orcamento.json
+│   ├── dicionario_financeiro.json
+│   └── estado_usuario_mock.json
+└── src/                           # Código-fonte da aplicação
+    ├── app.py                     # Frontend interativo em Streamlit
+    ├── agente.py                  # Integração LLM e Regras de Negócio (Guardrails)
+    ├── config.py                  # Variáveis de ambiente e conexão local
+    └── requirements.txt           # Dependências do Python
 ```
 
 ---
-
-## Dicas Finais
-
-1. **Comece pelo prompt:** Um bom system prompt é a base de um agente eficaz
-2. **Use os dados mockados:** Eles garantem consistência e evitam problemas com dados sensíveis
-3. **Foque na segurança:** No setor financeiro, evitar alucinações é crítico
-4. **Teste cenários reais:** Simule perguntas que um cliente faria de verdade
-5. **Seja direto no pitch:** 3 minutos passam rápido, vá ao ponto
